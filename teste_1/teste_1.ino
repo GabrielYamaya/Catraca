@@ -42,7 +42,7 @@ void setup()
 
   cartao_valido[1][0] = 0x43;
   cartao_valido[1][1] = 0x0;
-  cartao_valido[1][2] = 0x4B;
+  cartao_valido[1][2] = 0x4A;
   cartao_valido[1][3] = 0x6B;
   cartao_valido[1][4] = 0xD8;
   
@@ -88,18 +88,18 @@ void loop()
   delay(2000);
 }
 
-boolean check(){
-  for(int k = 0; k <= usuarios; k++){
-    for(int j = 0; j < 5; j++){
-      confere = true;
-      if(Payload[j] != cartao_valido[k][j]){
+boolean check() {
+  for (int k = 0; k < usuarios; k++) {
+    boolean confere = true; // Inicialize confere como true para cada novo usuário
+    for (int j = 0; j < 5; j++) {
+      if (Payload[j] != cartao_valido[k][j]) {
         confere = false;
+        break; // Não é necessário continuar verificando se um byte não corresponde
       }
     }
-    if(confere == true){
-    return true;
-    break;
+    if (confere) {
+      return true; // Se todos os bytes correspondem, retorna true
     }
   }
-  return false;
+  return false; // Se nenhum usuário corresponder, retorna false
 }
