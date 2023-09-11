@@ -1,28 +1,33 @@
 #include <SoftwareSerial.h>
 #include <RDM6300.h>
 
-#define usuarios 2 //Número de usuários cadastrados subtraído um.
+#define usuarios 3 //Número de usuários cadastrados
 
 boolean check();
+
+void aciona_motor();
 
 //Inicializa a serial nos pinos 12 (RX) e 13 (TX) 
 SoftwareSerial RFID(12, 13);
 
-//Configura o led na porta digital D2
-int Led = 4;
+
+int Led = 4; //Configura o led na porta digital D2
+int Motor = 16; //Configura o motor na porta digital so
+//int Sensor = 13; //Configura o sensor na porta digital sc
 
 uint8_t Payload[6]; // used for read comparisons
 
 uint8_t cartao_valido[usuarios][6]; // usado como um usuário válido
 
-RDM6300 RDM6300(Payload);
-
 boolean confere = true;
+
+RDM6300 RDM6300(Payload);
 
 void setup()
 {
-  //Define o pino do led como saida
-  pinMode(Led, OUTPUT);
+  pinMode(Led, OUTPUT); //Define o pino do led como saida
+  pinMode(Motor, OUTPUT); //Define o pino do motor como saída
+  //pinMode(Sensor, INPUT); //Define o pino do sensor como entrada
   
   //Inicializa a serial para o leitor RDM6300
   RFID.begin(9600);
@@ -39,18 +44,18 @@ void setup()
   cartao_valido[0][2] = 0x4A;
   cartao_valido[0][3] = 0x6B;
   cartao_valido[0][4] = 0xD9;
-
-  cartao_valido[1][0] = 0x43;
-  cartao_valido[1][1] = 0x0;
-  cartao_valido[1][2] = 0x4A;
-  cartao_valido[1][3] = 0x6B;
-  cartao_valido[1][4] = 0xD8;
   
-  cartao_valido[2][0] = 0x2;
-  cartao_valido[2][1] = 0x6;
-  cartao_valido[2][2] = 0x6C;
-  cartao_valido[2][3] = 0x4D;
-  cartao_valido[2][4] = 0x11;
+  cartao_valido[1][0] = 0x2;
+  cartao_valido[1][1] = 0x6;
+  cartao_valido[1][2] = 0x6C;
+  cartao_valido[1][3] = 0x4D;
+  cartao_valido[1][4] = 0x11;
+
+  cartao_valido[2][0] = 0x43;
+  cartao_valido[2][1] = 0x0;
+  cartao_valido[2][2] = 0x4A;
+  cartao_valido[2][3] = 0x6B;
+  cartao_valido[2][4] = 0xD8;
 }
 
 void loop()
@@ -73,10 +78,10 @@ void loop()
           Serial.print(" ");
         }
         Serial.println();
-        //Aciona o led
         digitalWrite(Led, LOW);
         Serial.println("Acesso permitido. ");
         Serial.println("");
+        aciona_motor();
       } else {
         Serial.print("Acesso negado. ");
         Serial.println("");
@@ -102,4 +107,20 @@ boolean check() {
     }
   }
   return false; // Se nenhum usuário corresponder, retorna false
+}
+
+void aciona_motor(){
+  digitalWrite(Motor, HIGH);
+  delay(2000);
+  while(true){
+    /*boolean sensor = digitalRead(Sensor);
+    if(sensor){
+      digitalWrite(Motor, LOW);
+      sensor == false;
+      break;
+    }*/
+    delay(100);
+    digitalWrite(Motor, LOW);//
+    break;//
+  }  
 }
